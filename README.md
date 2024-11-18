@@ -22,6 +22,6 @@ bowtie2 -p 64 -f --interleaved ./359250487_S94_L007_interleaved.fasta --seed 42 
 git clone https://github.com/jianshu93/sam_filter.git
 cd sam_filter
 cargo build --release
-cat data/test.sam | ./target/release/sam_filter -i 0.98 -r 0.95 > test.filtered.sam
+cat data/test.sam | ./target/release/sam_filter -i 0.98 -r 0.90 > test.filtered.sam
 
 ```
