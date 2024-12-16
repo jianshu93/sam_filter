@@ -36,39 +36,48 @@ fn main() {
     let matches = Command::new("Cigar Filter")
         .version("1.0")
         .about("Filters CIGAR strings by sequence identity and alignment ratio in SAM files")
-        .arg(Arg::new("min_identity")
-            .long("identity")
-            .short('i')
-            .value_parser(clap::value_parser!(f64))
-            .required(true)
-            .help("Minimum matching identity as a float"))
-        .arg(Arg::new("min_ratio")
-            .long("ratio")
-            .short('r')
-            .value_parser(clap::value_parser!(f64))
-            .required(true)
-            .help("Minimum query alignment ratio as a float"))
-        .arg(Arg::new("reverse")
-            .long("reverse")
-            .required(false)
-            .action(clap::ArgAction::SetTrue)
-            .help("If used, print lines where identity <= min_identity (ignoring ratio), otherwise print lines where identity > min_identity and ratio > min_ratio"))
+        .arg(
+            Arg::new("min_identity")
+                .long("identity")
+                .short('i')
+                .value_parser(clap::value_parser!(f64))
+                .required(true)
+                .help("Minimum matching identity as a float"),
+        )
+        .arg(
+            Arg::new("min_ratio")
+                .long("ratio")
+                .short('r')
+                .value_parser(clap::value_parser!(f64))
+                .required(true)
+                .help("Minimum query alignment ratio as a float"),
+        )
+        .arg(
+            Arg::new("reverse")
+                .long("reverse")
+                .action(clap::ArgAction::SetTrue)
+                .help("If used, print lines where identity <= min_identity (ignoring ratio), otherwise print lines where identity > min_identity and ratio > min_ratio"),
+        )
         .get_matches();
 
     let min_identity: f64 = *matches.get_one::<f64>("min_identity").unwrap();
     let min_ratio: f64 = *matches.get_one::<f64>("min_ratio").unwrap();
-    let reverse = matches.contains_id("reverse");
+    let reverse = matches.get_flag("reverse");
 
     let stdin = io::stdin();
     let handle = stdin.lock();
     for line in handle.lines() {
-        let line = line.expect("Could not read line from standard input");
+        let line = match line {
+            Ok(l) => l,
+            Err(_) => continue,
+        };
+
         let parts: Vec<&str> = line.split('\t').collect();
 
         if parts.len() > 5 {
             if let Some(nm_tag) = parts.iter().find(|&x| x.starts_with("NM:i:")) {
                 if let Ok(nm) = nm_tag[5..].parse::<u32>() {
-                    let cigar = parts[5].to_string(); 
+                    let cigar = parts[5].to_string();
                     let total_length = calculate_alignment_length(cigar);
                     let identity = calculate_identity(total_length, nm);
                     let query_length = parts[9].len() as f64;
