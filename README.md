@@ -11,7 +11,7 @@ Options:
   -V, --version                  Print version
 ```
 
-## Generate sensitive mappings with no SAM header
+## Generate sensitive mappings without SAM header
 ```bash
 bowtie2 -p 64 -f --interleaved ./359250487_S94_L007_interleaved.fasta --seed 42 --very-sensitive -k 16 --np 1 --mp "1,1" --rdg "0,1" --rfg "0,1" --score-min "L,0,-0.05" --no-head --no-unal -S 359250487_S94_L007.sam -x pUC57.fasta
 
