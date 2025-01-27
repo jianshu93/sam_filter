@@ -1,4 +1,23 @@
 # Filter SAM file by sequence identity and alignment ratio
+## install
+Pre-compiled binary
+```bash
+wget https://github.com/jianshu93/sam_filter/releases/download/v0.1.0/sam_filter_Linux_x86-64_v01.0.zip
+unzip sam_filter_Linux_x86-64_v01.0.zip
+chmod a+x ./sam_filter
+./sam_filter -h
+
+```
+
+
+Compile from source
+```bash
+git clone https://github.com/jianshu93/sam_filter
+cd sam_filter
+cargo build --release
+./target/release/sam_filter -h
+```
+
 
 ## usage
 ```bash
